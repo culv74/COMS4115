@@ -1,0 +1,298 @@
+Team names and UNIs
+William Culver WRC2120
+Gabi Holley    GF2501
+
+Project Overview
+
+This project implements a custom lexer for a simple ASCII art programming language. The lexer reads input programs and outputs a list of tokens in the format <Token Type, Token Value>.
+
+Define the lexical grammar
+Keyword Tokens: Represent commands like draw, write, and grid.
+	Pattern: draw|write|grid
+Identifier Tokens: Represent ASCII art identifiers such as dog, cat, tree, etc.
+	Pattern: [a-zA-Z]+
+Operator Tokens: Operators used to combine images, e.g., +, /, *.
+	Pattern: [+/*]
+Number Tokens: Represent numerical values for duplications or grid dimensions.
+	Pattern: [0-9]+
+Special Symbol Tokens: Represent special symbols like parentheses (, ), comma ,, and semicolon ;.
+	Pattern: [(),;]
+
+Scanning Algorithm Implementation:
+
+Initialize Scanner:
+	Start at the initial state (S0). Set the current character index to the beginning of the input program.
+
+State Transitions:
+State S0 (Initial State):
+	Read the next character.
+	If the character is alphabetic (a-zA-Z), transition to State S1 (Keyword Check State).
+	If the character is a digit (0-9), transition to State S2 (Number State).
+	If the character is one of the operators (+, /, *), transition to State S3 (Operator State).
+	If the character is a special symbol ((, ), ,, ;), transition to State S4 (Special Symbol State).
+	If the character is not recognized, transition to Error State and handle the lexical error.
+State S1 (Keyword Check State):
+	Continue reading characters until a non-alphabetic character is encountered.
+	Check if the recognized string matches a keyword (draw, write, grid).
+	If yes, emit <Keyword, value> and return to State S0.
+	If no, transition to State S5 (Identifier State).
+	State S5 (Identifier State):
+	Emit <Identifier, value>.
+	Return to State S0.
+State S2 (Number State):
+	Continue reading characters until a non-digit character is encountered.
+	Emit <Number, value>.
+	Return to State S0.
+State S3 (Operator State):
+	Emit <Operator, value>.
+	Return to State S0.
+State S4 (Special Symbol State):
+	Emit <Special Symbol, value>.
+	Return to State S0.
+	Error State:
+	Emit an error message indicating the unrecognized character and its position (line and column).
+	Return to State S0 or stop scanning if the error is unrecoverable.
+End of Input:
+	When the end of the input is reached, emit any remaining tokens and stop the scanning process.
+
+Handling Lexical Errors
+	When an invalid character or sequence is detected, output an error indicating the location and type of error.
+	Example: Error: Unexpected character '@' at line 3, column 15.
+
+Sample input programs 
+
+Sample Program 1: Simple Drawing
+draw(dog);
+Expected Tokens:
+<Keyword, draw>
+<Special Symbol, (>
+<Identifier, dog>
+<Special Symbol, )>
+<Special Symbol, ;>
+
+Sample Program 2: Simple Grid
+grid(2,2);
+Expected Tokens:
+<Keyword, grid>
+<Special Symbol, (>
+<Number, 2>
+<Special Symbol, ,>
+<Number, 2>
+<Special Symbol, )>
+<Special Symbol, ;>
+
+Sample Program 3: Combination of Drawings
+draw(cat) + draw(dog);
+Expected Tokens:
+<Keyword, draw>
+<Special Symbol, (>
+<Identifier, cat>
+<Special Symbol, )>
+<Operator, +>
+<Keyword, draw>
+<Special Symbol, (>
+<Identifier, dog>
+<Special Symbol, )>
+<Special Symbol, ;>
+
+Sample Program 4: Error Handling
+draw(@cat);
+Error: Unexpected character '@' at position 6
+<Keyword, draw>
+<Special Symbol, (>
+<Identifier, cat>
+<Special Symbol, )>
+<Special Symbol, ;>
+
+Sample Program 5: Duplication
+write(sun) * 3;
+Expected Tokens:
+<Keyword, write>
+<Special Symbol, (>
+<Identifier, sun>
+<Special Symbol, )>
+<Operator, *>
+<Number, 3>
+<Special Symbol, ;>
+
+
+Description of code
+
+1. Import Necessary Modules
+python
+Copy code
+import sys
+The sys module is imported to handle command-line arguments, which allows the lexer to read either a file or direct input from the user.
+2. Define the Lexer Class
+python
+Copy code
+class Lexer:
+A class named Lexer is defined to encapsulate the logic for lexical analysis of the given input source code.
+a. Initialize the Lexer
+
+Copy code
+def __init__(self, source_code):
+    self.source_code = source_code
+    self.position = 0
+    self.length = len(source_code)
+__init__ Method: Initializes the lexer with the given source_code.
+
+Attributes:
+source_code: Stores the entire input source code as a string.
+position: Keeps track of the current position being read in the source code.
+length: Stores the length of the input source code to determine when to stop processing.
+
+b. Get the Next Character
+
+Copy code
+def get_next_char(self):
+    if self.position < self.length:
+        char = self.source_code[self.position]
+        self.position += 1
+        return char
+    return None
+
+get_next_char Method: Returns the next character in the source code and advances the current position (position).
+If at End of Code: Returns None when the end of the code is reached.
+
+c. Peek at the Next Character
+
+Copy code
+def peek_next_char(self):
+    if self.position < self.length:
+        return self.source_code[self.position]
+    return None
+peek_next_char Method: Returns the next character in the source code without advancing the current position.
+This is useful for lookahead operations in lexical analysis.
+
+3. Tokenize the Source Code
+
+Copy code
+def tokenize(self):
+    # List to store tokens
+    tokens = []  
+    # Initial state
+    state = 'S0'
+    # Buffer to the store characters for multi-character tokens
+    buffer = ''
+
+tokenize Method: Main method to perform lexical analysis and convert source code into tokens.
+tokens List: Stores the resulting tokens.
+state: Keeps track of the current state of the finite automaton. Initially set to S0 (starting state).
+buffer: A temporary storage for multi-character tokens such as keywords, identifiers, and numbers.
+
+a. Main Tokenization Loop
+
+Copy code
+while self.position <= self.length:
+    char = self.get_next_char()
+
+The loop runs until the end of the source code.
+char: The current character being processed.
+
+b. State S0: Initial State
+
+Copy code
+if state == 'S0':
+    if char is None:
+        break
+    elif char.isalpha():
+        buffer += char
+        state = 'S1'
+    elif char.isdigit():
+        buffer += char
+        state = 'S2'
+    elif char in '+/*':
+        tokens.append(("Operator", char))
+    elif char in '(),;':
+        tokens.append(("Special Symbol", char))
+    elif not char.isspace():
+        print(f"Error: Unexpected character '{char}' at position {self.position}")
+
+Initial State (S0): Determines the type of character and transitions to the appropriate state.
+Alphabetic Character: Adds the character to the buffer and moves to S1 (Keyword/Identifier State).
+Digit: Adds the character to the buffer and moves to S2 (Number State).
+Operator (+, /, *): Immediately appends an Operator token to tokens.
+Special Symbol ((, ), ,, ;): Immediately appends a Special Symbol token to tokens.
+Unrecognized Character: If the character is neither whitespace nor a valid symbol, it prints an error message.
+
+c. State S1: Building a Keyword or Identifier
+
+Copy code
+elif state == 'S1':
+    if char is not None and char.isalpha():
+        buffer += char
+    else:
+        if buffer in ['draw', 'write', 'grid']:
+            tokens.append(("Keyword", buffer))
+        else:
+            tokens.append(("Identifier", buffer))
+        buffer = ''
+        state = 'S0'
+        if char is not None:
+            self.position -= 1
+
+State S1: This state is responsible for building keywords or identifiers.
+Alphabetic Character: Adds the character to the buffer.
+End of Keyword/Identifier: If a non-alphabetic character is encountered:
+Keyword Check: If buffer matches a known keyword (draw, write, grid), adds it as a Keyword token.
+Otherwise: Adds the buffer as an Identifier token.
+Reset: Clears the buffer, resets state to S0, and steps back one position if necessary to reprocess the current character.
+
+d. State S2: Building a Number
+
+Copy code
+elif state == 'S2':
+    if char is not None and char.isdigit():
+        buffer += char
+    else:
+        tokens.append(("Number", buffer))
+        buffer = ''
+        state = 'S0'
+        if char is not None:
+            self.position -= 1
+
+State S2: This state is responsible for building numbers.
+Digit Character: Adds the character to the buffer.
+End of Number: If a non-digit character is encountered:
+Adds the buffer as a Number token.
+Reset: Clears the buffer, resets state to S0, and steps back one position if necessary to reprocess the current character.
+
+4. Return the Tokens
+
+Copy code
+return tokens
+After processing all characters, returns the list of tokens (tokens).
+
+5. Main Function to Run the Lexer
+
+Copy code
+if __name__ == "__main__":
+    if len(sys.argv) == 2:
+        input_file = sys.argv[1]
+        try:
+            with open(input_file, "r") as f:
+                source_code = f.read()
+        except FileNotFoundError:
+            print(f"Error: File '{input_file}' not found.")
+            sys.exit(1)
+    elif len(sys.argv) == 3 and sys.argv[1] == '--input':
+        source_code = sys.argv[2]
+    else:
+        print("Usage: python3 lexer.py <input_file> or python3 lexer.py --input '<input_code>'")
+        sys.exit(1)
+
+    lexer = Lexer(source_code)
+    tokens = lexer.tokenize()
+    for token in tokens:
+        print(f"<{token[0]}, {token[1]}>")
+
+Command-line Arguments Handling:
+Checks if an input file is provided (python3 lexer.py <input_file>).
+If --input is specified (python3 lexer.py --input '<input_code>'), reads source code from command line arguments.
+If the input is incorrect, prints usage instructions and exits.
+Lexer Object:
+Creates a Lexer object with the given source_code.
+Calls the tokenize method to get the tokens.
+Print Tokens:
+Loops through the tokens list and prints each token in the format <Token Type, Token Value>.
