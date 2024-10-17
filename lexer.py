@@ -22,6 +22,18 @@ class Lexer:
             return self.source_code[self.position]
         return None
 
+    #Return true if c is one of our defined operators: +/*
+    def isOperator(c):
+        if c in '+/*':
+            return True
+        return False
+   
+    #Return True if c is one of our defined special symbols: (),;
+    def isSymbol(c)
+        if c in '(),;':
+            return True
+        return False
+
     # Tokenize the source code into a list of tokens
     def tokenize(self):
         tokens = []  # List to store tokens
@@ -43,10 +55,10 @@ class Lexer:
                     # If the character is a digit, start building a number
                     buffer += char
                     state = 'S2'
-                elif char in '+/*':
+                elif isOperator(char):
                     # If the character is an operator, emit an operator token
                     tokens.append(("Operator", char))
-                elif char in '(),;':
+                elif isSymbol(char):
                     # If the character is a special symbol, emit a special symbol token
                     tokens.append(("Special Symbol", char))
                 elif not char.isspace():
@@ -76,7 +88,6 @@ class Lexer:
                     state = 'S0'
                     if char is not None:
                         self.position -= 1
-
         return tokens
 
 # Main function to run the lexer
