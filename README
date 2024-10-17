@@ -49,7 +49,7 @@ State S3 (Operator State):
 State S4 (Special Symbol State):
 	Emit <Special Symbol, value>.
 	Return to State S0.
-	Error State:
+Error State:
 	Emit an error message indicating the unrecognized character and its position (line and column).
 	Return to State S0 or stop scanning if the error is unrecoverable.
 End of Input:
