@@ -119,15 +119,19 @@ Expected Tokens:
 Description of code
 
 1. Import Necessary Modules
-python
+
 Copy code
 import sys
+
 The sys module is imported to handle command-line arguments, which allows the lexer to read either a file or direct input from the user.
+
 2. Define the Lexer Class
-python
+
 Copy code
 class Lexer:
+
 A class named Lexer is defined to encapsulate the logic for lexical analysis of the given input source code.
+
 a. Initialize the Lexer
 
 Copy code
