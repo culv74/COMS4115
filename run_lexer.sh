@@ -14,9 +14,21 @@ then
     fi
 fi
 
-# Prompt the user to enter code to be tokenized
-echo "Enter the code to be tokenized (end with EOF/Ctrl+D):"
-input_code=$(cat)
-
-# Run the lexer with the input code
-python3 lexer.py --input "$input_code"
+# Check if a file is provided as an argument
+if [ "$#" -eq 1 ]; then
+    input_file=$1
+    if [ -f "$input_file" ]; then
+        # Run the lexer with the provided input file
+        python3 lexer.py "$input_file"
+    else
+        echo "Error: File '$input_file' not found."
+        exit 1
+    fi
+else
+    # Prompt the user to enter code to be tokenized
+    echo "Enter the code to be tokenized (end with EOF/Ctrl+D):"
+    input_code=$(cat)
+    
+    # Run the lexer with the input code
+    python3 lexer.py --input "$input_code"
+fi
