@@ -36,7 +36,7 @@ State S1 (Keyword Check State):
 	Check if the recognized string matches a keyword (draw, write, grid).
 	If yes, emit <Keyword, value> and return to State S0.
 	If no, transition to State S5 (Identifier State).
-	State S5 (Identifier State):
+State S5 (Identifier State):
 	Emit <Identifier, value>.
 	Return to State S0.
 State S2 (Number State):
