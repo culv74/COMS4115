@@ -2,6 +2,11 @@ import sys
 
 # Class for the lexer that tokenizes the source code
 class Lexer:
+    #static variable initialization
+    def keywords = ['draw', 'write', 'grid']
+    def operators = '+/*'
+    def specialSymbols = '(),;'
+    
     # Initialize the lexer with the source code
     def __init__(self, source_code):
         self.source_code = source_code
@@ -21,18 +26,6 @@ class Lexer:
         if self.position < self.length:
             return self.source_code[self.position]
         return None
-
-    #Return true if c is one of our defined operators: +/*
-    def isOperator(c):
-        if c in '+/*':
-            return True
-        return False
-   
-    #Return True if c is one of our defined special symbols: (),;
-    def isSymbol(c)
-        if c in '(),;':
-            return True
-        return False
 
     # Tokenize the source code into a list of tokens
     def tokenize(self):
@@ -55,10 +48,10 @@ class Lexer:
                     # If the character is a digit, start building a number
                     buffer += char
                     state = 'S2'
-                elif isOperator(char):
+                elif char in operators:
                     # If the character is an operator, emit an operator token
                     tokens.append(("Operator", char))
-                elif isSymbol(char):
+                elif char in specialSymbols:
                     # If the character is a special symbol, emit a special symbol token
                     tokens.append(("Special Symbol", char))
                 elif not char.isspace():
@@ -70,7 +63,7 @@ class Lexer:
                     buffer += char
                 else:
                     # Check if the buffer matches a keyword, otherwise it's an identifier
-                    if buffer in ['draw', 'write', 'grid']:
+                    if buffer in keywords:
                         tokens.append(("Keyword", buffer))
                     else:
                         tokens.append(("Identifier", buffer))
