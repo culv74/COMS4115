@@ -277,7 +277,7 @@ return tokens
 
 After processing the entire source code, the `tokenize` function returns the list of tokens.
 
-17. **Main Function to Run the Lexer**
+17. Main Function to Run the Lexer
 if __name__ == "__main__":
     if len(sys.argv) == 2:
         input_file = sys.argv[1]
