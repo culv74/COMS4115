@@ -32,8 +32,8 @@ class Lexer:
         tokens = []  # List to store tokens
         state = 'S0'  # Initial state
         buffer = ''  # Buffer to store characters for multi-character tokens
-        min_kw_len = min(len(kw) for kw in keywords) #to know when to check for kws
-        max_kw_len = max(len(kw) for kw in keywords) #to know when to make transition from S1 to S5
+        min_kw_len = min(len(kw) for kw in self.keywords) #to know when to check for kws
+        max_kw_len = max(len(kw) for kw in self.keywords) #to know when to make transition from S1 to S5
 
         # Loop through the source code character by character
         while self.position <= self.length:
@@ -50,9 +50,9 @@ class Lexer:
                     # If the character is a digit, start building a number
                     buffer += char
                     state = 'S2'
-                elif char in operators:
+                elif char in self.operators:
                     state = 'S3'
-                elif char in specialSymbols:
+                elif char in self.specialSymbols:
                     state = 'S4'
                 elif not char.isspace():
                     # If the character is not whitespace and not recognized, emit an error
@@ -65,7 +65,7 @@ class Lexer:
                         state = 'S5'
                     elif len(buffer)>=min_kw_len: #check if buffer is long enough to determine if keyword
                         # Check if the buffer matches a keyword
-                        if buffer in keywords:
+                        if buffer in self.keywords:
                             state = 'S6' #transition to keyword accept state
                 else:
                     state = 'S5' #transition to identifier state
