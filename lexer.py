@@ -52,8 +52,12 @@ class Lexer:
                     state = 'S2'
                 elif char in self.operators:
                     state = 'S3'
+                    tokens.append(("Operator", char))
+                    state = 'S0'
                 elif char in self.specialSymbols:
                     state = 'S4'
+                    tokens.append(("Special Symbol", char))
+                    state = 'S0'
                 elif not char.isspace():
                     # If the character is not whitespace and not recognized, emit an error
                     print(f"Error: Unexpected character '{char}' at position {self.position} not parsed.", file=sys.stderr)
@@ -96,16 +100,6 @@ class Lexer:
                     state = 'S0'
                     if char is not None:
                         self.position -= 1
-            elif state == 'S3':
-                #emit an operator token / Accept
-                tokens.append(("Operator", char))
-                buffer = ''
-                state = 'S0'
-            elif state == 'S4':
-                #emit a special symbol token / Accept
-                tokens.append(("Special Symbol", char))
-                buffer = ''
-                state = 'S0'
         return tokens
 
 # Main function to run the lexer
