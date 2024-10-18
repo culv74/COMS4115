@@ -3,9 +3,9 @@ import sys
 # Class for the lexer that tokenizes the source code
 class Lexer:
     #static variable initialization
-    def keywords = ['draw', 'write', 'grid']
-    def operators = '+/*'
-    def specialSymbols = '(),;'
+    keywords = ['draw', 'write', 'grid']
+    operators = '+/*'
+    specialSymbols = '(),;'
     
     # Initialize the lexer with the source code
     def __init__(self, source_code):
