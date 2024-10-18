@@ -76,6 +76,7 @@ class Lexer:
                 state = 'S0'
                 if char is not None:
                     self.position -= 1
+                    continue
             elif state == 'S5':
                 # State S5: Identifier build & accept state.
                 if char is not None and char.isalpha():
@@ -86,6 +87,7 @@ class Lexer:
                     state = 'S0'
                     if char is not None:
                         self.position -= 1
+                        continue
             elif state == 'S2':
                 # State S2: Building a number
                 if char is not None and char.isdigit():
@@ -96,6 +98,7 @@ class Lexer:
                     state = 'S0'
                     if char is not None:
                         self.position -= 1
+                        continue
             if state == 'S3':
                 #emit an operator token / Accept
                 tokens.append(("Operator", char))
