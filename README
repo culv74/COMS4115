@@ -181,7 +181,7 @@ The `tokenize` method is responsible for breaking the source code into tokens:
 - tokens: List to store the generated tokens.
 - state: Tracks the current state in the finite state machine.
 - buffer: Stores characters that form multi-character tokens like keywords or identifiers.
-- min_kw_len and max_kw_len: Used to track keyword lengths to optimize when to check for them.
+- min_kw_len and max_kw_len: Used to track keyword lengths to optimize when to check for them. Helps determine when to transition from S1 to S5.
 
 8. Looping Through the Source Code
 while self.position <= self.length:
@@ -236,7 +236,8 @@ elif state == 'S6':
     if char is not None:
         self.position -= 1
 
-State S6: Accepts and finalizes a keyword token. After emitting the token, it returns to State S0.
+State S6: Accepts and finalizes a keyword token. After emitting the token, it resets buffer and returns to State S0. 
+If the last character read was not included in token, moves position to make sure char gets processed in next token.
 
 12. State S5 (Identifier Build & Accept)
 elif state == 'S5':
@@ -249,7 +250,8 @@ elif state == 'S5':
         if char is not None:
             self.position -= 1
 
-State S5: Handles identifiers (variables or function names). If no more alphabetic characters follow, it finalizes the token.
+State S5: Handles identifiers (variables or function names). If no more alphabetic characters follow, it emits the token, resets buffer and returns to state S0.
+If the last character read was not included in token, moves position to make sure char gets processed in next token.
 
 13. State S2 (Building Numbers)
 elif state == 'S2':
@@ -262,21 +264,22 @@ elif state == 'S2':
         if char is not None:
             self.position -= 1
 
-State S2: Builds number tokens by concatenating digits. When a non-digit is encountered, it emits a number token.
+State S2: Builds number tokens by concatenating digits. When a non-digit is encountered, it emits a number token. Then buffer is cleared, state is returned to S0.
+If the last character read was not included in token, moves position to make sure char gets processed in next token.
 
 14. State S3 (Operators)
 elif state == 'S3':
     tokens.append(("Operator", char))
     state = 'S0'
 
-State S3: Directly emits operator tokens when encountered.
+State S3: Directly emits single character operator tokens when encountered. Return to S0.
 
 15. State S4 (Special Symbols)
 elif state == 'S4':
     tokens.append(("Special Symbol", char))
     state = 'S0'
 
-State S4: Handles special symbols like parentheses and semicolons. The lexer immediately emits these tokens.
+State S4: Handles special symbols like parentheses and semicolons. The lexer immediately emits these single character tokens. Return to S0.
 
 16. Returning the List of Tokens
 return tokens
