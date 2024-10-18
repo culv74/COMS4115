@@ -56,7 +56,7 @@ class Lexer:
                     tokens.append(("Special Symbol", char))
                 elif not char.isspace():
                     # If the character is not whitespace and not recognized, emit an error
-                    print(f"Error: Unexpected character '{char}' at position {self.position}")
+                    print(f"Error: Unexpected character '{char}' at position {self.position}", file=sys.stderr)
             elif state == 'S1':
                 # State S1: Building a keyword or identifier
                 if char is not None and char.isalpha():
@@ -93,7 +93,7 @@ if __name__ == "__main__":
             with open(input_file, "r") as f:
                 source_code = f.read()
         except FileNotFoundError:
-            print(f"Error: File '{input_file}' not found.")
+            print(f"Error: File '{input_file}' not found.", file = sys.stderr)
             sys.exit(1)
     elif len(sys.argv) == 3 and sys.argv[1] == '--input':
         # Read the source code from the command line input
