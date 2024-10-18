@@ -96,11 +96,11 @@ class Lexer:
                     state = 'S0'
                     if char is not None:
                         self.position -= 1
-            elif state == 'S3':
+            if state == 'S3':
                 #emit an operator token / Accept
                 tokens.append(("Operator", char))
                 state = 'S0'
-            elif state == 'S4':
+            if state == 'S4':
                 #emit a special symbol token / Accept
                 tokens.append(("Special Symbol", char))
                 state = 'S0'
