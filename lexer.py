@@ -62,7 +62,7 @@ class Lexer:
                 if char is not None and char.isalpha():
                     buffer += char
                     if len(buffer) > max_kw_len: #if can't be a kw, build identifier, go to S5
-                        state == 'S5'
+                        state = 'S5'
                     elif len(buffer)>=min_kw_len: #check if buffer is long enough to determine if keyword
                         # Check if the buffer matches a keyword
                         if buffer in keywords:
@@ -73,7 +73,7 @@ class Lexer:
                 # State S5: Building an Identifier
                 if char is not None and char.isalpha():
                     buffer += char
-                else
+                else:
                     tokens.append(("Identifier", buffer))
                     buffer = ''
                     state = 'S0'
