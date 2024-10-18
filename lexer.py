@@ -2,7 +2,7 @@ import sys
 
 # Class for the lexer that tokenizes the source code
 class Lexer:
-    #static variable initialization
+    #class variable initialization
     keywords = ['draw', 'write', 'grid']
     operators = '+/*'
     specialSymbols = '(),;'
@@ -32,6 +32,8 @@ class Lexer:
         tokens = []  # List to store tokens
         state = 'S0'  # Initial state
         buffer = ''  # Buffer to store characters for multi-character tokens
+        min_kw_len = min(len(kw) for kw in keywords) #to know when to check for kws
+        max_kw_len = max(len(kw) for kw in keywords) #to know when to make transition from S1 to S5
 
         # Loop through the source code character by character
         while self.position <= self.length:
@@ -49,24 +51,30 @@ class Lexer:
                     buffer += char
                     state = 'S2'
                 elif char in operators:
-                    # If the character is an operator, emit an operator token
-                    tokens.append(("Operator", char))
+                    state = 'S3'
                 elif char in specialSymbols:
-                    # If the character is a special symbol, emit a special symbol token
-                    tokens.append(("Special Symbol", char))
+                    state = 'S4'
                 elif not char.isspace():
                     # If the character is not whitespace and not recognized, emit an error
-                    print(f"Error: Unexpected character '{char}' at position {self.position}", file=sys.stderr)
+                    print(f"Error: Unexpected character '{char}' at position {self.position} not parsed.", file=sys.stderr)
             elif state == 'S1':
                 # State S1: Building a keyword or identifier
                 if char is not None and char.isalpha():
                     buffer += char
+                    if len(buffer) > max_kw_len: #if can't be a kw, build identifier, go to S5
+                        state == 'S5'
+                    elif len(buffer)>=min_kw_len: #check if buffer is long enough to determine if keyword
+                        # Check if the buffer matches a keyword
+                        if buffer in keywords:
+                            tokens.append(("Keyword", buffer))
                 else:
-                    # Check if the buffer matches a keyword, otherwise it's an identifier
-                    if buffer in keywords:
-                        tokens.append(("Keyword", buffer))
-                    else:
-                        tokens.append(("Identifier", buffer))
+                    state == 'S5'
+            elif state == 'S5':
+                # State S5: Building an Identifier
+                if char is not None and char.isalpha():
+                    buffer += char
+                else
+                    tokens.append(("Identifier", buffer))
                     buffer = ''
                     state = 'S0'
                     if char is not None:
@@ -81,6 +89,12 @@ class Lexer:
                     state = 'S0'
                     if char is not None:
                         self.position -= 1
+            elif state == 'S3':
+                # If the character is an operator, emit an operator token
+                tokens.append(("Operator", char))
+            elif state == 'S4':
+                # If the character is a special symbol, emit a special symbol token
+                tokens.append(("Special Symbol", char))
         return tokens
 
 # Main function to run the lexer
