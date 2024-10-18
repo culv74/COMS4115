@@ -51,10 +51,8 @@ class Lexer:
                     buffer += char
                     state = 'S2'
                 elif char in self.operators:
-                    buffer += char
                     state = 'S3'
                 elif char in self.specialSymbols:
-                    buffer += char
                     state = 'S4'
                 elif not char.isspace():
                     # If the character is not whitespace and not recognized, emit an error
@@ -100,12 +98,12 @@ class Lexer:
                         self.position -= 1
             elif state == 'S3':
                 #emit an operator token / Accept
-                tokens.append(("Operator", buffer))
+                tokens.append(("Operator", char))
                 buffer = ''
                 state = 'S0'
             elif state == 'S4':
                 #emit a special symbol token / Accept
-                tokens.append(("Special Symbol", buffer))
+                tokens.append(("Special Symbol", char))
                 buffer = ''
                 state = 'S0'
         return tokens
