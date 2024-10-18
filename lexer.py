@@ -34,7 +34,8 @@ class Lexer:
         buffer = ''  # Buffer to store characters for multi-character tokens
         min_kw_len = min(len(kw) for kw in self.keywords) #to know when to check for kws
         max_kw_len = max(len(kw) for kw in self.keywords) #to know when to make transition from S1 to S5
-
+        skip = false # Helps with position tracking
+        
         # Loop through the source code character by character
         while self.position <= self.length:
             char = self.get_next_char()
@@ -51,11 +52,11 @@ class Lexer:
                     buffer += char
                     state = 'S2'
                 elif char in self.operators:
-                    state = 'S3'
+                    state = 'S3' # to correspond to state descriptions
                     tokens.append(("Operator", char))
                     state = 'S0'
                 elif char in self.specialSymbols:
-                    state = 'S4'
+                    state = 'S4' # to correspond to state descriptions
                     tokens.append(("Special Symbol", char))
                     state = 'S0'
                 elif not char.isspace():
@@ -73,6 +74,7 @@ class Lexer:
                             state = 'S6' #transition to keyword accept state
                 else:
                     self.position -= 1
+                    skip = True
                     state = 'S5' #transition to identifier state
             elif state == 'S6':
                 # State S6: Keyword accept state.
@@ -89,8 +91,10 @@ class Lexer:
                     tokens.append(("Identifier", buffer))
                     buffer = ''
                     state = 'S0'
-                    if char is not None:
+                    if char is not None and not skip:
                         self.position -= 1
+                    if skip:
+                        skip = not skip
             elif state == 'S2':
                 # State S2: Building a number
                 if char is not None and char.isdigit():
