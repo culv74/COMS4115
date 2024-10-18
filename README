@@ -183,7 +183,6 @@ The `tokenize` method is responsible for breaking the source code into tokens:
 - buffer: Stores characters that form multi-character tokens like keywords or identifiers.
 - min_kw_len and max_kw_len: Used to track keyword lengths to optimize when to check for them.
 
-
 8. Looping Through the Source Code
 while self.position <= self.length:
     char = self.get_next_char()
@@ -206,7 +205,8 @@ if state == 'S0':
         state = 'S4'
     elif not char.isspace():
         print(f"Error: Unexpected character '{char}' at position {self.position} not parsed.", file=sys.stderr)
-- State S0 is the initial state. The lexer checks the character type and transitions to other states:
+
+State S0 is the initial state. The lexer checks the character type and transitions to other states:
   - Alphabetic characters go to State S1 to potentially form a keyword or identifier.
   - Digits go to State S2 to form numbers.
   - Operators go to State S3.
@@ -223,7 +223,8 @@ elif state == 'S1':
             state = 'S6'
     else:
         state = 'S5'
-- State S1 handles alphabetic characters and builds potential keywords or identifiers.
+
+State S1 handles alphabetic characters and builds potential keywords or identifiers.
    - If the buffer matches a keyword (length between min_kw_len and max_kw_len), it transitions to State S6.
    - If the buffer exceeds the keyword length or does not match, it transitions to State S5 to handle identifiers.
 
@@ -234,7 +235,8 @@ elif state == 'S6':
     state = 'S0'
     if char is not None:
         self.position -= 1
-- State S6: Accepts and finalizes a keyword token. After emitting the token, it returns to **State S0**.
+
+State S6: Accepts and finalizes a keyword token. After emitting the token, it returns to State S0.
 
 12. State S5 (Identifier Build & Accept)
 elif state == 'S5':
@@ -246,7 +248,8 @@ elif state == 'S5':
         state = 'S0'
         if char is not None:
             self.position -= 1
-- State S5: Handles identifiers (variables or function names). If no more alphabetic characters follow, it finalizes the token.
+
+State S5: Handles identifiers (variables or function names). If no more alphabetic characters follow, it finalizes the token.
 
 13. State S2 (Building Numbers)
 elif state == 'S2':
@@ -258,19 +261,22 @@ elif state == 'S2':
         state = 'S0'
         if char is not None:
             self.position -= 1
-- State S2: Builds number tokens by concatenating digits. When a non-digit is encountered, it emits a number token.
+
+State S2: Builds number tokens by concatenating digits. When a non-digit is encountered, it emits a number token.
 
 14. State S3 (Operators)
 elif state == 'S3':
     tokens.append(("Operator", char))
     state = 'S0'
-- State S3: Directly emits operator tokens when encountered.
+
+State S3: Directly emits operator tokens when encountered.
 
 15. State S4 (Special Symbols)
 elif state == 'S4':
     tokens.append(("Special Symbol", char))
     state = 'S0'
-- State S4: Handles special symbols like parentheses and semicolons. The lexer immediately emits these tokens.
+
+State S4: Handles special symbols like parentheses and semicolons. The lexer immediately emits these tokens.
 
 16. Returning the List of Tokens
 return tokens
