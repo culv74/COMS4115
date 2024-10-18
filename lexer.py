@@ -67,8 +67,10 @@ class Lexer:
                         # Check if the buffer matches a keyword
                         if buffer in keywords:
                             tokens.append(("Keyword", buffer))
+                            buffer = ''
+                            state = 'S0'
                 else:
-                    state == 'S5'
+                    state = 'S5'
             elif state == 'S5':
                 # State S5: Building an Identifier
                 if char is not None and char.isalpha():
@@ -92,9 +94,11 @@ class Lexer:
             elif state == 'S3':
                 # If the character is an operator, emit an operator token
                 tokens.append(("Operator", char))
+                state = 'S0'
             elif state == 'S4':
                 # If the character is a special symbol, emit a special symbol token
                 tokens.append(("Special Symbol", char))
+                state = 'S0'
         return tokens
 
 # Main function to run the lexer
