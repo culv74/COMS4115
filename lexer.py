@@ -65,7 +65,7 @@ class Lexer:
                         state = 'S5'
                     elif len(buffer)>=min_kw_len: #check if buffer is long enough to determine if keyword
                         # Check if the buffer matches a keyword
-                        if buffer in self.keywords and not self.peek_next_char().isalpha #greedy
+                        if buffer in self.keywords and not self.peek_next_char().isalpha: #greedy
                             state = 'S6' #transition to keyword accept state
                 else:
                     state = 'S5' #transition to identifier state
