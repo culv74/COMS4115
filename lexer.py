@@ -74,8 +74,10 @@ class Lexer:
                 tokens.append(("Keyword", buffer))
                 buffer = ''
                 state = 'S0'
+                if char is not None:
+                    self.position -= 1
             elif state == 'S5':
-                # State S5: Building an Identifier
+                # State S5: Identifier build & accept state.
                 if char is not None and char.isalpha():
                     buffer += char
                 else:
@@ -87,7 +89,7 @@ class Lexer:
             elif state == 'S2':
                 # State S2: Building a number
                 if char is not None and char.isdigit():
-                    buffer += char
+                    buffer += char #self-loop to S2
                 else:
                     tokens.append(("Number", buffer))
                     buffer = ''
@@ -95,11 +97,11 @@ class Lexer:
                     if char is not None:
                         self.position -= 1
             elif state == 'S3':
-                # If the character is an operator, emit an operator token
+                #emit an operator token / Accept
                 tokens.append(("Operator", char))
                 state = 'S0'
             elif state == 'S4':
-                # If the character is a special symbol, emit a special symbol token
+                #emit a special symbol token / Accept
                 tokens.append(("Special Symbol", char))
                 state = 'S0'
         return tokens
