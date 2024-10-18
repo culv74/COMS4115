@@ -72,6 +72,7 @@ class Lexer:
                         if buffer in self.keywords:
                             state = 'S6' #transition to keyword accept state
                 else:
+                    self.position -= 1
                     state = 'S5' #transition to identifier state
             elif state == 'S6':
                 # State S6: Keyword accept state.
