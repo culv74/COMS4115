@@ -105,6 +105,3 @@ Identifier -> 'I like dogs'
 
 This would generate three dogs stacked vertically, followed by the text "I like dogs" in ASCII.
 
----
-
-This CFG captures the key features of your language and can be extended further to support additional functionalities or refinements. Let me know if you'd like further modifications!
