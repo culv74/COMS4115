@@ -2,7 +2,7 @@ class ASTNode:
     def __init__(self, type_, value=None):
         self.type = type_  # Type of the node (e.g., 'DrawStatement', 'Expression')
         self.value = value  # Value of the node (e.g., 'dog', 'cat', 'sun')
-        self.children = []  # Children nodes (if any)
+        self.children = []  
 
     def add_child(self, child_node):
         self.children.append(child_node)
@@ -26,7 +26,7 @@ class Parser:
             raise SyntaxError(f"Expected {token_type}, found {self.current_token()}")
 
     def parse_program(self):
-        """Parse the program consisting of multiple statements."""
+        """program --> statements"""
         root = ASTNode("Program")
         while self.position < len(self.tokens):
             statement = self.parse_statement()
@@ -34,7 +34,7 @@ class Parser:
         return root
 
     def parse_statement(self):
-        """Parse individual statements."""
+        """statements --> statement subtypes"""
         current = self.current_token()
         if current and current[0] == 'Keyword':
             keyword = current[1]
