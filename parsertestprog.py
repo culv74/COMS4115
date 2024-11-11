@@ -20,7 +20,7 @@ for token in tokens:
 
 # Step 3: Parse the tokens using the Parser to generate an AST
 parser = Parser(tokens)  # Initialize parser with the tokenized input
-ast = parser.parse()  # Generate AST from the tokens
+ast = parser.parse_program()  # Generate AST from the tokens
 
 # Step 4: Print the generated AST (ensure __str__ or __repr__ methods are implemented in AST)
 print("\nGenerated AST:")
