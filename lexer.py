@@ -1,19 +1,16 @@
 import sys
 
-# Class for the lexer that tokenizes the source code
 class Lexer:
-    #class variable initialization
     keywords = ['draw', 'write', 'grid']
     operators = '+/*'
     specialSymbols = '(),;'
     
-    # Initialize the lexer with the source code
     def __init__(self, source_code):
         self.source_code = source_code
-        self.position = 0  # Current position in the source code
-        self.length = len(source_code)  # Length of the source code
+        self.position = 0  
+        self.length = len(source_code) 
 
-    # Return the next character in the source code, and move the position forward
+    # Return the next char & move position forward
     def get_next_char(self):
         if self.position < self.length:
             char = self.source_code[self.position]
@@ -21,13 +18,13 @@ class Lexer:
             return char
         return None
 
-    # Peek at the next character without moving the position forward
+    # Peek at the next char
     def peek_next_char(self):
         if self.position < self.length:
             return self.source_code[self.position]
         return None
 
-    # Tokenize the source code into a list of tokens
+    # Tokenize source code
     def tokenize(self):
         tokens = []  # List to store tokens
         state = 'S0'  # Initial state
