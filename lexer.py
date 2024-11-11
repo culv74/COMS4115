@@ -31,7 +31,7 @@ class Lexer:
         buffer = ''  # Buffer to store characters for multi-character tokens
         min_kw_len = min(len(kw) for kw in self.keywords) #to know when to check for kws
         max_kw_len = max(len(kw) for kw in self.keywords) #to know when to make transition from S1 to S5
-        skip = false # Helps with position tracking
+        skip = False # Helps with position tracking
         
         # Loop through the source code character by character
         while self.position <= self.length:
