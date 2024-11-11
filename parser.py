@@ -87,14 +87,15 @@ class Parser:
         """Parse grid content which can be a combination of expressions."""
         content_node = ASTNode('GridContent')
         while self.position < len(self.tokens):
-            if self.current_token()[0] in ['Keyword', 'Identifier']:
+            current = self.current_token()
+            if current and current[0] in ['Keyword', 'Identifier']:
                 content_node.add_child(self.parse_expression())
                 if self.current_token() and self.current_token()[0] == 'Special Symbol' and self.current_token()[1] == ',':
                     self.eat('Special Symbol')  # eat ','
                 else:
-                    break
+                    break  # Stop if no more commas are found
             else:
-                break
+                break  # Stop if an unexpected token is found
         return content_node
 
     def parse_expression(self):
