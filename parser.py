@@ -93,9 +93,11 @@ class Parser:
                 if self.current_token() and self.current_token()[0] == 'Special Symbol' and self.current_token()[1] == ',':
                     self.eat('Special Symbol')  # eat ','
                 else:
-                    break  # Stop if no more commas are found
+                    break  # Stop if no more commas or invalid tokens
+            elif current and current[0] == 'Special Symbol' and current[1] == ')':
+                break  # Stop if we've encountered the closing parenthesis for the grid
             else:
-                break  # Stop if an unexpected token is found
+                break  # Break if any unexpected token is found
         return content_node
 
     def parse_expression(self):
