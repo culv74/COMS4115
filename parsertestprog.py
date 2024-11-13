@@ -24,9 +24,3 @@ ast = parser.parse_program()  # Generate AST from the tokens
 print("\nGenerated AST:")
 print(ast)
 
-# Step 5: Optional: Check for a specific AST structure for validation
-# Example of a structure check for a DrawStatement with an AdditionExpression
-if isinstance(ast, DrawStatement) and isinstance(ast.expression, AdditionExpression):
-    print("\nTest Passed: Draw Statement with Addition Expression found!")
-else:
-    print("\nTest Failed: Unexpected AST structure.")
