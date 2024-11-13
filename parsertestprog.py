@@ -5,7 +5,7 @@ from parser import Parser
 # Sample source code to test the lexer and parser
 source_code = """
 draw(sun + dog);
-# grid(2, 2, draw(sun), write(dog), write(tree), draw(cat));
+grid(2, 2, draw(sun), write(dog), write(tree), draw(cat));
 (3 * draw(dog)) / write(I like dogs);
 """
 
