@@ -23,6 +23,7 @@ class Parser:
         if self.current_token() and self.current_token()[0] == token_type:
             self.position += 1
         else:
+            print(f"Error: Expected {token_type}, found {self.current_token()}")
             raise SyntaxError(f"Expected {token_type}, found {self.current_token()}")
 
     def parse_program(self):
@@ -89,8 +90,8 @@ class Parser:
         while self.position < len(self.tokens):
             current = self.current_token()
             if current and current[0] in ['Keyword', 'Identifier']:
-                content_node.add_child(self.parse_expression())
-                if self.current_token() and self.current_token()[0] == 'Special Symbol' and self.current_token()[1] == ',':
+                content_node.add_child(self.parse_expression())  # Add expression as child
+                if self.position < len(self.tokens) and self.current_token()[0] == 'Special Symbol' and self.current_token()[1] == ',':
                     self.eat('Special Symbol')  # eat ','
                 else:
                     break  # Stop if no more commas or invalid tokens
@@ -107,9 +108,11 @@ class Parser:
             operator = self.current_token()[1]
             self.eat('Operator')
             right = self.parse_image()
-            left = ASTNode('Expression', value=operator)
-            left.add_child(left)
-            left.add_child(right)
+            # Create an operator node with left and right children
+            operator_node = ASTNode('Expression', value=operator)
+            operator_node.add_child(left)
+            operator_node.add_child(right)
+            left = operator_node  # Update left to be the new operator node
         return left
 
     def parse_image(self):
